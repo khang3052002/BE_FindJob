@@ -85,7 +85,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>find-job-exe</finalName>
+		
 	</build>
 
 </project>
