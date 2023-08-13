@@ -18,7 +18,7 @@ public class testApi {
     private RefreshTokenRepositoryRedis refreshTokenRepositoryRedis;
     @Autowired
     private RedisTemplate redisTemplate;
-    @GetMapping("/")
+    @GetMapping("/test1")
     public ResponseEntity<ResponeObject> test1()
     {
         String rfToken = (String) redisTemplate.opsForValue().get("user1khang305");
@@ -30,10 +30,10 @@ public class testApi {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponeObject("THAT BAI","FAIL",null));
 
     }
-    @GetMapping("/test2")
-    public ResponseEntity<String> test2()
+    @GetMapping("/normal")
+    public ResponseEntity<ResponeObject> test2()
     {
-        return ResponseEntity.ok("ON AM AE");
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponeObject("thanh cong","OK",""));
     }
     @PostMapping("/save")
     public ResponseEntity<ResponeObject> test2(@RequestBody TestDTO testDTO)
