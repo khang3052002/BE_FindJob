@@ -30,7 +30,11 @@ public class testApi {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponeObject("THAT BAI","FAIL",null));
 
     }
-
+    @GetMapping("/test")
+    public ResponseEntity<String> test2()
+    {
+        return ResponseEntity.ok("ON AM AE");
+    }
     @PostMapping("/save")
     public ResponseEntity<ResponeObject> test2(@RequestBody TestDTO testDTO)
     {
