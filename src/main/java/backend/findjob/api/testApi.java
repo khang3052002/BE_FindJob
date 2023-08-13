@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/test")
+@RequestMapping("/api/test")
 public class testApi {
     @Autowired
     private RefreshTokenRepositoryRedis refreshTokenRepositoryRedis;
