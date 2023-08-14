@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authCustomizer -> authCustomizer
 //                                .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/**","/v3/api-docs/**", "/swagger-ui/**").permitAll()
 //                        .requestMatchers("/api/doibong/**").hasAuthority("QLDB")
 //                        .requestMatchers("/api/auth/**").permitAll()
 //                        .requestMatchers(PUT,"/api/test").hasAnyAuthority("QLDB")

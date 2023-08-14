@@ -103,6 +103,11 @@ public class CVService implements ICVService {
         try
         {
             CVEntity cv = cvRepository.findById(idResume).orElse(null);
+            if(cv == null)
+            {
+                return  ResponseEntity.notFound()
+                        .build();
+            }
             return  ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(cv.getType()))
 

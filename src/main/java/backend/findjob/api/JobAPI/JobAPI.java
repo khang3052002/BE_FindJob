@@ -2,6 +2,8 @@ package backend.findjob.api.JobAPI;
 
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IJobService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/job")
+//@SecurityRequirement(name = "Bearer Auth")
 public class JobAPI {
     @Autowired
     private IJobService jobService;
+    @Operation(
+            security = @SecurityRequirement(name = "Bearer Auth"))
     @GetMapping("/all")
     public ResponseEntity<ResponeObject> getAllJob()
     {
