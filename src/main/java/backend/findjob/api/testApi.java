@@ -4,6 +4,7 @@ import backend.findjob.dto.TestDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.entity.Redis.RefreshTokenRedis;
 import backend.findjob.repository.Redis.RefreshTokenRepositoryRedis;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/test")
+@Hidden
 public class testApi {
     @Autowired
     private RefreshTokenRepositoryRedis refreshTokenRepositoryRedis;

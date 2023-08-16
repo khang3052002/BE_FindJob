@@ -1,6 +1,8 @@
 package backend.findjob.api.JobAPI;
 
 import backend.findjob.dto.respone.ResponeObject;
+import backend.findjob.entity.Enum.TypeWork;
+import backend.findjob.entity.Enum.TypeWorkPlace;
 import backend.findjob.services.IJobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -8,8 +10,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/job")
@@ -53,5 +58,26 @@ public class JobAPI {
     public ResponseEntity<ResponeObject> getSaveListFromUser(@PathVariable("id_user") Long id_user)
     {
         return jobService.getSaveListFromUser(id_user);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResponeObject> getJobByFilter(
+            @RequestParam(name = "workplace", required = false) TypeWorkPlace workplace,
+            @RequestParam(name = "jobtype", required = false) TypeWork jobtype,
+            @RequestParam(name = "pos", required = false)  String pos,
+            @RequestParam(name = "city",required = false) String city,
+            @RequestParam(name="exp", required = false) String exp,
+            @RequestParam(name="specialization", required = false) List<String> specialization,
+            @RequestParam(name="salary_min", required = false) Double salary_min,
+            @RequestParam(name="salary_max", required = false) Double salary_max
+
+            )
+    {
+//        System.out.println(specialization.get(0));
+//        System.out.println(specialization.toString());
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(new ResponeObject("Success", "Get all job list successfull", "listJobDTO"));
+
+        return jobService.getJobByFilter(workplace,jobtype, pos,city,exp,specialization,salary_min,salary_max);
     }
 }

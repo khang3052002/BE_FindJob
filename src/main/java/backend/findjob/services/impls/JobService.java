@@ -9,6 +9,8 @@ import backend.findjob.dto.respone.Job.JobDetailRespone;
 import backend.findjob.dto.respone.PageDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.entity.CVEntity;
+import backend.findjob.entity.Enum.TypeWork;
+import backend.findjob.entity.Enum.TypeWorkPlace;
 import backend.findjob.entity.JobEntity;
 import backend.findjob.entity.UserEntity;
 import backend.findjob.helper.GenericConverter;
@@ -272,6 +274,84 @@ public class JobService implements IJobService {
     @Override
     public int totalItem() {
         return (int) jobRepository.count();
+    }
+
+    @Override
+    public ResponseEntity<ResponeObject> getJobByFilter(TypeWorkPlace workplace, TypeWork jobtype, String pos, String city, String exp, List<String> specialization, Double salary_min, Double salary_max) {
+//        System.out.println(workplace);
+//        System.out.println(jobtype);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = null;
+        AuthenticateDTO authenticateDTO  = null;
+        if(authentication.getPrincipal().getClass() == AuthenticateDTO.class)
+        {
+            authenticateDTO = (AuthenticateDTO) authentication.getPrincipal();
+            username = authenticateDTO.getUsername();
+        }
+        else{
+            username = (String) authentication.getPrincipal();
+        }
+        System.out.println(username);
+        Boolean is_user = false;
+        Long id_user = null;
+        if (!username.equals("anonymousUser")) {
+            is_user = true;
+            id_user = authenticateDTO.getId();
+        }
+
+        List<JobEntity> listJob = jobRepository.findJobByFilTer(workplace,jobtype,pos,city,exp,specialization, salary_min, salary_max);
+//        jobRepository.findJobByFilTer()
+        if(listJob.isEmpty())
+        {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponeObject("Empty","List job save is empty",""));
+        }
+
+        List<JobDTO> listJobDTO = new ArrayList<>();
+        try {
+            for (JobEntity jobEntity : listJob) {
+                JobDTO job = GenericConverter.convert(jobEntity, JobDTO.class);
+                job.setTime_create(jobEntity.getCreate_at());
+                job.setNameCompany(jobEntity.getCompany().getName());
+                job.setId_company(jobEntity.getCompany().getId());
+                job.getTags().add(jobEntity.getType_work().toString());
+                job.getTags().add(jobEntity.getLocation());
+                job.getTags().add(jobEntity.getExperience());
+                job.getTags().add(jobEntity.getType_work_place().toString());
+                // check is save
+                if (is_user == false) {
+                    job.setIs_saved(false);
+                } else {
+                    List<UserEntity> listUserSave = jobEntity.getListUser();
+                    if (listUserSave.isEmpty()) {
+                        job.setIs_saved(false);
+                    } else {
+                        job.setIs_saved(false);
+                        for (UserEntity user : listUserSave) {
+                            if (user.getId().equals(id_user)) {
+                                job.setIs_saved(true);
+                                break;
+                            }
+                        }
+
+                    }
+
+                }
+                listJobDTO.add(job);
+            }
+        } catch (Exception e) {
+//            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponeObject("Fail", e.getMessage(), ""));
+        }
+
+//        PageDTO pageDTO = new PageDTO(page.getPageNumber() + 1,(int) Math.ceil((double) totalItem()/ page.getPageSize()));
+//        JobDTORespone respone = new JobDTORespone(pageDTO,listJobDTO);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponeObject("Success", "Get all job list successfull", listJobDTO));
+
     }
 
     public JobDetailDTO convertJobEntityToDTO(JobEntity jobEntity, Long id_user)
