@@ -39,7 +39,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String id_device;
     @Column
     private String skill;
-
+    @Column
+    private String about_me;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_image", referencedColumnName = "id")
     private ImageUserEntity imageUser;
@@ -79,6 +80,14 @@ public class UserEntity extends BaseEntity implements UserDetails {
 //    public void setImage(String image) {
 //        this.image = image;
 //    }
+
+    public String getAbout_me() {
+        return about_me;
+    }
+
+    public void setAbout_me(String about_me) {
+        this.about_me = about_me;
+    }
 
     public ImageUserEntity getImageUser() {
         return imageUser;

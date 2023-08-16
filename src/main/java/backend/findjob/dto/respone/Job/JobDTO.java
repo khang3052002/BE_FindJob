@@ -1,5 +1,7 @@
 package backend.findjob.dto.respone.Job;
 
+import backend.findjob.dto.respone.PageDTO;
+
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -56,6 +58,7 @@ public class JobDTO {
         this.time_create =  dateFormat.format(create_at);
 
     }
+
 
     public String getNameCompany() {
         return nameCompany;

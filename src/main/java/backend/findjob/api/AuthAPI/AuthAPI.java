@@ -5,6 +5,13 @@ import backend.findjob.dto.request.SignInRequestDTO;
 import backend.findjob.dto.request.SignUpRequestDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IAuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Auth")
 public class AuthAPI {
 
     @Autowired
@@ -23,6 +31,13 @@ public class AuthAPI {
     {
         return authService.register(signUpRequestDTO);
     }
+    @Operation(
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(mediaType = "application/json")
+                        ,required = true,
+                    description = "Only one field username or email"
+                    )
+    )
     @PostMapping("/signin")
     public ResponseEntity<ResponeObject> signIn(@RequestBody SignInRequestDTO signInRequestDTO)
     {

@@ -24,6 +24,15 @@ public class JobDetailDTO {
     private String description;
     private String required;
     private TypeWorkPlace type_work_place;
+    private Boolean is_saved;
+
+    public Boolean getIs_saved() {
+        return is_saved;
+    }
+
+    public void setIs_saved(Boolean is_saved) {
+        this.is_saved = is_saved;
+    }
 
     public Long getId() {
         return id;
