@@ -4,6 +4,7 @@ import backend.findjob.dto.respone.PageDTO;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,16 +14,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 public class JobDTO {
     private Long id;
     private String title;
     private Double salary;
     private String time_create;
-
+    private String numDayPost;
+    private String numDayExpire;
     private String nameCompany;
     private Long id_company;
     private Boolean is_saved;
     private List<String> tags = new ArrayList<>();
+
+    public String getNumDayPost() {
+        return numDayPost;
+    }
+
+    public void setNumDayPost(String numDayPost) {
+        this.numDayPost = numDayPost;
+    }
+
+    public String getNumDayExpire() {
+        return numDayExpire;
+    }
+
+    public void setNumDayExpire(String numDayExpire) {
+        this.numDayExpire = numDayExpire;
+    }
 
     public Long getId() {
         return id;
@@ -53,6 +73,9 @@ public class JobDTO {
     }
 
     public void setTime_create(Timestamp create_at) {
+
+
+
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         this.time_create =  dateFormat.format(create_at);
