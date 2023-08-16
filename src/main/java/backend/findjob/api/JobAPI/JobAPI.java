@@ -5,6 +5,8 @@ import backend.findjob.entity.Enum.TypeWork;
 import backend.findjob.entity.Enum.TypeWorkPlace;
 import backend.findjob.services.IJobService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,18 @@ public class JobAPI {
     {
         return jobService.getSaveListFromUser(id_user);
     }
-
+//    example = "'No experience' || 'More than 5 years' || 'Less than a year' || '1-3 years' || '3-5 years'",
+    @Operation(
+            method = "Filter job",
+            summary = "Filter job",
+            description = "Filter job",
+            parameters = {
+            @Parameter(name = "exp",
+                   description = "Value: No experience, More than 5 years, Less than a year, 1-3 years, 3-5 years"),
+            @Parameter(name="specialization",
+                    description = "Is array string. Value ex: Developer, Designer, Telesales, ... "),
+                    @Parameter(name="pos", description = "Value ex: Leader, Manager, Senior, Intern, Junior")
+    })
     @GetMapping("")
     public ResponseEntity<ResponeObject> getJobByFilter(
             @RequestParam(name = "workplace", required = false) TypeWorkPlace workplace,
