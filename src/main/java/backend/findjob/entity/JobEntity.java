@@ -61,6 +61,9 @@ public class JobEntity extends  BaseEntity{
     @OneToMany(mappedBy = "job")
     private List<CVEntity> listCV = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "id_province")
+    private ProvinceEntity province;
     public List<CVEntity> getListCV() {
         return listCV;
     }
@@ -195,5 +198,13 @@ public class JobEntity extends  BaseEntity{
 
     public void setCompany(CompanyEntity company) {
         this.company = company;
+    }
+
+    public ProvinceEntity getProvince() {
+        return province;
+    }
+
+    public void setProvince(ProvinceEntity province) {
+        this.province = province;
     }
 }

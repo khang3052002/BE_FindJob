@@ -73,12 +73,12 @@ public class JobAPI {
                     description = "Is array string. Value ex: Developer, Designer, Telesales, ... "),
                     @Parameter(name="pos", description = "Value ex: Leader, Manager, Senior, Intern, Junior")
     })
-    @GetMapping("")
+    @GetMapping("/filter")
     public ResponseEntity<ResponeObject> getJobByFilter(
             @RequestParam(name = "workplace", required = false) TypeWorkPlace workplace,
             @RequestParam(name = "jobtype", required = false) TypeWork jobtype,
             @RequestParam(name = "pos", required = false)  String pos,
-            @RequestParam(name = "city",required = false) String city,
+            @RequestParam(name = "code_city",required = false) String code_city,
             @RequestParam(name="exp", required = false) String exp,
             @RequestParam(name="specialization", required = false) List<String> specialization,
             @RequestParam(name="salary_min", required = false) Double salary_min,
@@ -91,6 +91,16 @@ public class JobAPI {
 //        return ResponseEntity.status(HttpStatus.OK)
 //                .body(new ResponeObject("Success", "Get all job list successfull", "listJobDTO"));
 
-        return jobService.getJobByFilter(workplace,jobtype, pos,city,exp,specialization,salary_min,salary_max);
+        return jobService.getJobByFilter(workplace,jobtype, pos,code_city,exp,specialization,salary_min,salary_max);
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponeObject> searchJobByCityAndKeyword(
+            @RequestParam(name = "code_city",required = false) String code_city,
+            @RequestParam(name = "keyword",required = false) String keyword
+            )
+    {
+        return jobService.searchJobByCityAndKeyword(keyword,code_city);
     }
 }

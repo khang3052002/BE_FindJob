@@ -305,6 +305,55 @@ public class JobService implements IJobService {
 
     }
 
+    @Override
+    public ResponseEntity<ResponeObject> searchJobByCityAndKeyword(String keyword, String codeCity) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = null;
+        AuthenticateDTO authenticateDTO  = null;
+        if(authentication.getPrincipal().getClass() == AuthenticateDTO.class)
+        {
+            authenticateDTO = (AuthenticateDTO) authentication.getPrincipal();
+            username = authenticateDTO.getUsername();
+        }
+        else{
+            username = (String) authentication.getPrincipal();
+        }
+        System.out.println(username);
+        Boolean is_user = false;
+        Long id_user = null;
+        if (!username.equals("anonymousUser")) {
+            is_user = true;
+            id_user = authenticateDTO.getId();
+        }
+
+        List<JobEntity> listJob = jobRepository.findJobByCodeCityAndKeyword(codeCity,keyword);
+        if(listJob.isEmpty())
+        {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponeObject("Empty","List job save is empty",""));
+        }
+
+        List<JobDTO> listJobDTO = new ArrayList<>();
+        try {
+            for (JobEntity jobEntity : listJob) {
+                JobDTO job = convertJobEntityToJobDTO_card(jobEntity,id_user);
+                listJobDTO.add(job);
+            }
+        } catch (Exception e) {
+//            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponeObject("Fail", e.getMessage(), ""));
+        }
+
+//        PageDTO pageDTO = new PageDTO(page.getPag) + 1,(int) Math.ceil((double) totalItem()/ page.getPageSize()));
+////        JobDTORespone respone = new JobDTORespone(pageDTO,listJobDTO);eNumber(
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponeObject("Success", "Get all job list successfull", listJobDTO));
+
+    }
+
     public JobDetailDTO convertJobEntityToDTO(JobEntity jobEntity, Long id_user)
     {
         try
@@ -368,7 +417,7 @@ public class JobService implements IJobService {
             job.setNameCompany(jobEntity.getCompany().getName());
             job.setId_company(jobEntity.getCompany().getId());
             job.getTags().add(jobEntity.getType_work().toString());
-            job.getTags().add(jobEntity.getLocation());
+            job.getTags().add(jobEntity.getProvince().getName());
             job.getTags().add(jobEntity.getExperience());
 
             job.setNumDayPost(Helper.convertDayAgoToNow(jobEntity.getCreate_at()));

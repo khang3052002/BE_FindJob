@@ -1,10 +1,15 @@
 package backend.findjob.repository;
 
+import backend.findjob.entity.CompanyEntity;
 import backend.findjob.entity.Enum.TypeWork;
 import backend.findjob.entity.Enum.TypeWorkPlace;
 import backend.findjob.entity.JobEntity;
+import backend.findjob.entity.ProvinceEntity;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.batch.BatchProperties;
@@ -22,7 +27,6 @@ import java.util.List;
 @Repository
 public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecificationExecutor<JobEntity> {
 
-
 //    @Query(
 //            value = " SELECT job from JobEntity as job " +
 //                    " where (:workplace is null or job.type_work_place = :workplace) " +
@@ -31,23 +35,21 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
 //                    " and (:city is null or job.location like %:city%)" +
 //                    " and (:experience is null or job.experience = :experience)" +
 //                    " and (:specialization is null or  job.specialization in :specialization)"
-//
-//
 //    )
 //    List<JobEntity> findJobByFilter(
-//            @Param("workplace") TypeWorkPlace workplace,
-//            @Param("jobtype") TypeWork jobtype,
-//            @Param("position") String position,
-//            @Param("city") String city,
-//            @Param("experience") String experience,
-//            @Param("specialization") List<String> specialization
+//            @Param("keyword") String  keyword,
+//            @Param("city") String code_city
 //            );
     default List<JobEntity> findJobByFilTer(TypeWorkPlace workplace, TypeWork jobtype
             ,  String position, String city, String experience,List<String> specialization
             ,Double salary_min, Double salary_max)
     {
+
+//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
         Specification<JobEntity> specification = (root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
+
             if(workplace != null && workplace.getClass() == TypeWorkPlace.class)
             {
                 predicates.add(criteriaBuilder.equal(root.get("type_work_place"),workplace));
@@ -70,7 +72,17 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
             }
             if(city != null )
             {
-                predicates.add(criteriaBuilder.like(root.get("location"),"%"+city+"%"));
+
+                //"province ở đây là thuộc tính province trong JobEntity"
+                Join<JobEntity, ProvinceEntity> provinceJoin = root.join("province", JoinType.INNER);
+
+//                System.out.println(provinceJoin.get("id"));
+//                System.out.println(root.get("location"));
+//
+//                System.out.println(root.get("province"));
+
+                predicates.add(criteriaBuilder.equal(provinceJoin.get("id"), city));
+//                predicates.add(criteriaBuilder.like(root.get("location"),"%"+city+"%"));
 
             }
             if(specialization != null && specialization.isEmpty() != true)
@@ -84,6 +96,48 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
                 Predicate andCompare = criteriaBuilder.and(compareGreater,compareLess);
                 predicates.add(andCompare);
             }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+
+        };
+        return findAll(specification);
+    }
+
+
+    default List<JobEntity> findJobByCodeCityAndKeyword(String code_city, String keyword)
+    {
+        Specification<JobEntity> specification = (root, query, criteriaBuilder) ->{
+            List<Predicate> predicates = new ArrayList<>();
+
+            if(keyword != null)
+            {
+
+                Predicate titlePredicate = criteriaBuilder.like(criteriaBuilder.upper(root.get("title")), "%"+keyword.toUpperCase()+"%");
+
+                Join<JobEntity, CompanyEntity> companyJoin = root.join("company", JoinType.INNER);
+                Predicate companyPredicate = criteriaBuilder.like(criteriaBuilder.upper(companyJoin.get("name")),"%"+keyword.toUpperCase()+"%");
+
+                Predicate orPredicate = criteriaBuilder.or(titlePredicate,companyPredicate);
+
+
+                predicates.add(orPredicate);
+
+            }
+            if(code_city != null )
+            {
+
+                //"province ở đây là thuộc tính province trong JobEntity"
+                Join<JobEntity, ProvinceEntity> provinceJoin = root.join("province", JoinType.INNER);
+
+//                System.out.println(provinceJoin.get("id"));
+//                System.out.println(root.get("location"));
+//
+//                System.out.println(root.get("province"));
+
+                predicates.add(criteriaBuilder.equal(provinceJoin.get("id"), code_city));
+//                predicates.add(criteriaBuilder.like(root.get("location"),"%"+city+"%"));
+
+            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };
