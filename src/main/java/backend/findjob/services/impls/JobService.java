@@ -1,6 +1,7 @@
 package backend.findjob.services.impls;
 
 import backend.findjob.dto.AuthenticateDTO;
+import backend.findjob.dto.ListDTO;
 import backend.findjob.dto.respone.Company.CompanyDTO;
 import backend.findjob.dto.respone.Job.JobDTO;
 import backend.findjob.dto.respone.Job.JobDTORespone;
@@ -34,6 +35,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class JobService implements IJobService {
@@ -254,10 +256,8 @@ public class JobService implements IJobService {
     }
 
     @Override
-    public ResponseEntity<ResponeObject> getJobByFilter(TypeWorkPlace workplace, TypeWork jobtype, String pos, String city, String exp, List<String> specialization, Double salary_min, Double salary_max) {
-//        System.out.println(workplace);
-//        System.out.println(jobtype);
-
+    public ResponseEntity<ResponeObject> getJobByFilter(TypeWorkPlace workplace, TypeWork jobtype, String pos
+            , String city, String exp, List<String> specialization, Double salary_min, Double salary_max,Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = null;
         AuthenticateDTO authenticateDTO  = null;
@@ -277,8 +277,8 @@ public class JobService implements IJobService {
             id_user = authenticateDTO.getId();
         }
 
-        List<JobEntity> listJob = jobRepository.findJobByFilTer(workplace,jobtype,pos,city,exp,specialization, salary_min, salary_max);
-//        jobRepository.findJobByFilTer()
+        ListDTO listResult = jobRepository.findJobByFilTer(workplace,jobtype,pos,city,exp,specialization, salary_min, salary_max,pageable);
+        List<JobEntity> listJob = (List<JobEntity>) listResult.getObject();
         if(listJob.isEmpty())
         {
             return ResponseEntity
@@ -298,15 +298,15 @@ public class JobService implements IJobService {
                     .body(new ResponeObject("Fail", e.getMessage(), ""));
         }
 
-//        PageDTO pageDTO = new PageDTO(page.getPageNumber() + 1,(int) Math.ceil((double) totalItem()/ page.getPageSize()));
-//        JobDTORespone respone = new JobDTORespone(pageDTO,listJobDTO);
+        PageDTO pageDTO = new PageDTO(pageable.getPageNumber() + 1,(int) Math.ceil((double) listResult.getTotalItem()/ pageable.getPageSize()));
+        JobDTORespone respone = new JobDTORespone(pageDTO,listJobDTO);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponeObject("Success", "Get all job list successfull", listJobDTO));
+                .body(new ResponeObject("Success", "Get all job list successfull", respone));
 
     }
 
     @Override
-    public ResponseEntity<ResponeObject> searchJobByCityAndKeyword(String keyword, String codeCity) {
+    public ResponseEntity<ResponeObject> searchJobByCityAndKeyword(String keyword, String codeCity,Pageable pageable) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = null;
@@ -327,7 +327,9 @@ public class JobService implements IJobService {
             id_user = authenticateDTO.getId();
         }
 
-        List<JobEntity> listJob = jobRepository.findJobByCodeCityAndKeyword(codeCity,keyword);
+        ListDTO listResult =  jobRepository.findJobByCodeCityAndKeyword(codeCity,keyword,pageable);
+
+        List<JobEntity> listJob = (List<JobEntity>)listResult.getObject();
         if(listJob.isEmpty())
         {
             return ResponseEntity
@@ -347,10 +349,12 @@ public class JobService implements IJobService {
                     .body(new ResponeObject("Fail", e.getMessage(), ""));
         }
 
-//        PageDTO pageDTO = new PageDTO(page.getPag) + 1,(int) Math.ceil((double) totalItem()/ page.getPageSize()));
-////        JobDTORespone respone = new JobDTORespone(pageDTO,listJobDTO);eNumber(
+
+        PageDTO pageDTO = new PageDTO(pageable.getPageNumber() + 1,(int) Math.ceil((double) listResult.getTotalItem()/ pageable.getPageSize()));
+        JobDTORespone respone = new JobDTORespone(pageDTO,listJobDTO);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponeObject("Success", "Get all job list successfull", listJobDTO));
+                .body(new ResponeObject("Success", "Get all job list successfull", respone));
 
     }
 

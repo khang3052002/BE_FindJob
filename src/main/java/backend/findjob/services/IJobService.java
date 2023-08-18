@@ -24,7 +24,7 @@ public interface IJobService {
 
     ResponseEntity<ResponeObject> getJobByFilter(TypeWorkPlace workplace, TypeWork jobtype, String pos,
                                                  String city, String exp, List<String> specialization,
-                                                 Double salary_min, Double salary_max);
+                                                 Double salary_min, Double salary_max, Pageable pageable);
 
-    ResponseEntity<ResponeObject> searchJobByCityAndKeyword(String keyword, String codeCity);
+    ResponseEntity<ResponeObject> searchJobByCityAndKeyword(String keyword, String codeCity, Pageable pageable);
 }

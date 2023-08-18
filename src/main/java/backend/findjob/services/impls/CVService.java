@@ -87,14 +87,16 @@ public class CVService implements ICVService {
                 System.out.println(downloadURl);
 
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponeObject("Fail",e.getMessage(),""));
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                        .body(new ResponeObject("Fail",e.getMessage(),""));
 
             }
             return ResponseEntity.status(HttpStatus.OK).body(new ResponeObject("Success","Upload CV successful",""));
 
         }
         else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponeObject("Unauthorized","Only users are allowed to upload CV ",""));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponeObject("Unauthorized","Only users are allowed to upload CV ",""));
         }
     }
 

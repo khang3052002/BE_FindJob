@@ -1,20 +1,20 @@
 package backend.findjob.dto.respone;
 
 public class PageDTO {
-    private int page;
+    private int currPage;
     private int totalPage;
 
     public PageDTO(int page, int totalPage) {
-        this.page = page;
+        this.currPage = page;
         this.totalPage = totalPage;
     }
 
-    public int getPage() {
-        return page;
+    public int getCurrPage() {
+        return currPage;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setCurrPage(int currPage) {
+        this.currPage = currPage;
     }
 
     public int getTotalPage() {

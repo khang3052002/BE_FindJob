@@ -82,25 +82,27 @@ public class JobAPI {
             @RequestParam(name="exp", required = false) String exp,
             @RequestParam(name="specialization", required = false) List<String> specialization,
             @RequestParam(name="salary_min", required = false) Double salary_min,
-            @RequestParam(name="salary_max", required = false) Double salary_max
-
+            @RequestParam(name="salary_max", required = false) Double salary_max,
+            @RequestParam("page") Integer page,
+            @RequestParam("limit") Integer limit
             )
     {
-//        System.out.println(specialization.get(0));
-//        System.out.println(specialization.toString());
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(new ResponeObject("Success", "Get all job list successfull", "listJobDTO"));
-
-        return jobService.getJobByFilter(workplace,jobtype, pos,code_city,exp,specialization,salary_min,salary_max);
+        page--;
+        Pageable pageable = PageRequest.of(page, limit);
+        return jobService.getJobByFilter(workplace,jobtype, pos,code_city,exp,specialization,salary_min,salary_max,pageable);
     }
 
 
     @GetMapping("/search")
     public ResponseEntity<ResponeObject> searchJobByCityAndKeyword(
             @RequestParam(name = "code_city",required = false) String code_city,
-            @RequestParam(name = "keyword",required = false) String keyword
+            @RequestParam(name = "keyword",required = false) String keyword,
+            @RequestParam("page") Integer page,
+            @RequestParam("limit") Integer limit
             )
     {
-        return jobService.searchJobByCityAndKeyword(keyword,code_city);
+        page--;
+        Pageable pageable = PageRequest.of(page, limit);
+        return jobService.searchJobByCityAndKeyword(keyword,code_city,pageable);
     }
 }

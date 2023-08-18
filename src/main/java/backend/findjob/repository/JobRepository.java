@@ -1,5 +1,6 @@
 package backend.findjob.repository;
 
+import backend.findjob.dto.ListDTO;
 import backend.findjob.entity.CompanyEntity;
 import backend.findjob.entity.Enum.TypeWork;
 import backend.findjob.entity.Enum.TypeWorkPlace;
@@ -13,6 +14,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.batch.BatchProperties;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,8 +23,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecificationExecutor<JobEntity> {
@@ -40,9 +41,9 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
 //            @Param("keyword") String  keyword,
 //            @Param("city") String code_city
 //            );
-    default List<JobEntity> findJobByFilTer(TypeWorkPlace workplace, TypeWork jobtype
-            ,  String position, String city, String experience,List<String> specialization
-            ,Double salary_min, Double salary_max)
+    default ListDTO findJobByFilTer(TypeWorkPlace workplace, TypeWork jobtype
+            , String position, String city, String experience, List<String> specialization
+            , Double salary_min, Double salary_max, Pageable pageable)
     {
 
 //        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -81,7 +82,7 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
 //
 //                System.out.println(root.get("province"));
 
-                predicates.add(criteriaBuilder.equal(provinceJoin.get("id"), city));
+                predicates.add(criteriaBuilder.equal(provinceJoin.get("code"), city));
 //                predicates.add(criteriaBuilder.like(root.get("location"),"%"+city+"%"));
 
             }
@@ -99,11 +100,14 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };
-        return findAll(specification);
+        Long totalItem = count(specification);
+        List<JobEntity> list = findAll(specification,pageable).stream().toList();
+        ListDTO listRespone = new ListDTO(totalItem, (List<JobEntity>)list);
+        return listRespone;
     }
 
 
-    default List<JobEntity> findJobByCodeCityAndKeyword(String code_city, String keyword)
+    default ListDTO findJobByCodeCityAndKeyword(String code_city, String keyword, Pageable pageable)
     {
         Specification<JobEntity> specification = (root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
@@ -133,7 +137,7 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
 //
 //                System.out.println(root.get("province"));
 
-                predicates.add(criteriaBuilder.equal(provinceJoin.get("id"), code_city));
+                predicates.add(criteriaBuilder.equal(provinceJoin.get("code"), code_city));
 //                predicates.add(criteriaBuilder.like(root.get("location"),"%"+city+"%"));
 
             }
@@ -141,7 +145,11 @@ public interface JobRepository extends JpaRepository<JobEntity, Long>, JpaSpecif
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };
-        return findAll(specification);
+
+        Long totalItem = count(specification);
+        List<JobEntity> list = findAll(specification,pageable).stream().toList();
+        ListDTO listRespone = new ListDTO(totalItem, (List<JobEntity>)list);
+        return listRespone;
     }
 
 
