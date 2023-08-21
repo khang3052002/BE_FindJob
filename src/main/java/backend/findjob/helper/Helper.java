@@ -1,9 +1,12 @@
 package backend.findjob.helper;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -54,6 +57,13 @@ public class Helper {
         return days;
 
 
+    }
+
+    public static Date convertStringToDate(String date_str) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = formatter.parse(date_str);
+
+        return date;
     }
 
 

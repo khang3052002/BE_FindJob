@@ -1,16 +1,12 @@
 package backend.findjob.api.AuthAPI;
 
-import backend.findjob.dto.request.RefreshTokenRequestDTO;
-import backend.findjob.dto.request.SignInRequestDTO;
-import backend.findjob.dto.request.SignUpRequestDTO;
+import backend.findjob.dto.request.RefreshTokenRequest;
+import backend.findjob.dto.request.SignInRequest;
+import backend.findjob.dto.request.SignUpRequest;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IAuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +23,7 @@ public class AuthAPI {
     @Autowired
     private IAuthService authService;
     @PostMapping("/signup")
-    public ResponseEntity<ResponeObject> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO)
+    public ResponseEntity<ResponeObject> signUp(@RequestBody SignUpRequest signUpRequestDTO)
     {
         return authService.register(signUpRequestDTO);
     }
@@ -39,12 +35,12 @@ public class AuthAPI {
                     )
     )
     @PostMapping("/signin")
-    public ResponseEntity<ResponeObject> signIn(@RequestBody SignInRequestDTO signInRequestDTO)
+    public ResponseEntity<ResponeObject> signIn(@RequestBody SignInRequest signInRequestDTO)
     {
         return authService.login(signInRequestDTO);
     }
     @PostMapping("/refreshToken")
-    public  ResponseEntity<ResponeObject> refreshToken (@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO)
+    public  ResponseEntity<ResponeObject> refreshToken (@RequestBody RefreshTokenRequest refreshTokenRequestDTO)
     {
         return authService.refreshToken(refreshTokenRequestDTO);
     }

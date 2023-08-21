@@ -1,35 +1,17 @@
-package backend.findjob.entity;
+package backend.findjob.dto;
 
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.xml.crypto.Data;
 import java.sql.Date;
-
-@Entity
-@Table(name = "work_exp")
-
-public class WorkExpEntity extends BaseEntity{
-    @Column
+//@Builder
+public class WorkExpDTO {
     private String title;
-    @Column(columnDefinition = "TEXT")
     private String description;
-    @Column(name = "is_position_now")
     private Boolean is_position_now;
-    @Column
     private String company;
-    @Column
-    @DateTimeFormat(pattern="dd-MM-yyyy")
     private Date start_date;
-    @Column
-    @DateTimeFormat(pattern="dd-MM-yyyy")
     private Date end_date;
 
-    @ManyToOne
-    @JoinColumn(name = "id_user")
-    private UserEntity user;
+
+
     public String getTitle() {
         return title;
     }
@@ -46,12 +28,12 @@ public class WorkExpEntity extends BaseEntity{
         this.description = description;
     }
 
-    public Boolean getPositionNow() {
+    public Boolean getIs_position_now() {
         return is_position_now;
     }
 
-    public void setPositionNow(Boolean positionNow) {
-        is_position_now = positionNow;
+    public void setIs_position_now(Boolean is_position_now) {
+        this.is_position_now = is_position_now;
     }
 
     public String getCompany() {
@@ -76,13 +58,5 @@ public class WorkExpEntity extends BaseEntity{
 
     public void setEnd_date(Date end_date) {
         this.end_date = end_date;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
     }
 }

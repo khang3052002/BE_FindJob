@@ -1,9 +1,9 @@
 package backend.findjob.services.impls;
 
 import backend.findjob.config.jwt.JwtService;
-import backend.findjob.dto.request.RefreshTokenRequestDTO;
-import backend.findjob.dto.request.SignInRequestDTO;
-import backend.findjob.dto.request.SignUpRequestDTO;
+import backend.findjob.dto.request.RefreshTokenRequest;
+import backend.findjob.dto.request.SignInRequest;
+import backend.findjob.dto.request.SignUpRequest;
 import backend.findjob.dto.respone.InfoUserResponeDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.entity.UserEntity;
@@ -15,8 +15,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,8 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Service
 public class AuthService implements IAuthService {
@@ -45,7 +41,7 @@ public class AuthService implements IAuthService {
     @Value("${app.jwtRefreshSecretKey}")
     private  String jwtRefreshSecretKey;
     @Override
-    public ResponseEntity<ResponeObject> register(SignUpRequestDTO signupRequest) {
+    public ResponseEntity<ResponeObject> register(SignUpRequest signupRequest) {
         Boolean usernameExists = userRepository.existsByUsername(signupRequest.getUsername());
         Boolean emailExists = userRepository.existsByEmail(signupRequest.getEmail());
 
@@ -77,7 +73,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public ResponseEntity<ResponeObject> login(SignInRequestDTO signInRequestDTO) {
+    public ResponseEntity<ResponeObject> login(SignInRequest signInRequestDTO) {
         Authentication authentication= null;
         String usernameOrEmail = "";
         if(signInRequestDTO.getUsername() != null)
@@ -120,7 +116,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public ResponseEntity<ResponeObject> refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+    public ResponseEntity<ResponeObject> refreshToken(RefreshTokenRequest refreshTokenRequestDTO) {
         try
         {
             String rfToken = refreshTokenRequestDTO.getRefreshToken();

@@ -1,6 +1,6 @@
 package backend.findjob.dto.request;
 
-public class RefreshTokenRequestDTO {
+public class RefreshTokenRequest {
     private String username;
     private Long id;
     private String refreshToken;

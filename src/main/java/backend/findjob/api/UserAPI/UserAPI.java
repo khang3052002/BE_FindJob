@@ -1,5 +1,6 @@
 package backend.findjob.api.UserAPI;
 
+import backend.findjob.dto.WorkExpDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +47,7 @@ public class UserAPI {
             }
     )
     @PostMapping("/image/upload_avatar")
-    public ResponseEntity<ResponeObject> uploadAvatar(@RequestParam("image")MultipartFile image)
+    public ResponseEntity<ResponeObject> uploadAvatar(@RequestParam("image") MultipartFile image)
     {
         return userService.uploadAvatar(image);
     }
@@ -55,6 +56,18 @@ public class UserAPI {
     public ResponseEntity<Resource> getAvatar(@PathVariable("id_image") Long id_image)
     {
         return userService.getAvatar(id_image);
+    }
+
+    @Operation(
+            security = @SecurityRequirement(name = "Bearer Auth")
+    )
+    @PutMapping("/{id_user}/profile/edit-about-me")
+    public ResponseEntity<ResponeObject> editAboutMeByUser(@PathVariable Long id_user, @RequestParam("aboutme") String aboutme)
+    {
+
+//        System.out.println(aboutme);
+//        System.out.println(aboutme.contains("{"));
+        return userService.editAboutMeByUser(id_user, aboutme);
     }
 
 }
