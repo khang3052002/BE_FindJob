@@ -7,7 +7,6 @@ import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.entity.*;
 import backend.findjob.helper.GenericConverter;
 import backend.findjob.repository.EducationRepository;
-import backend.findjob.repository.ImageUserRepository;
 import backend.findjob.repository.UserRepository;
 import backend.findjob.repository.WorkExpRepository;
 import backend.findjob.services.IUserService;
@@ -30,13 +29,14 @@ import java.sql.Timestamp;
 public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ImageUserRepository imageUserRepository;
+
     @Autowired
     private WorkExpRepository workExpRepository;
 
     @Autowired
     private EducationRepository educationRepository;
+    @Autowired
+    private UploadFileService uploadFileService;
     @Override
     public ResponseEntity<ResponeObject> uploadAvatar(MultipartFile image) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -55,7 +55,6 @@ public class UserService implements IUserService {
                         .body(new ResponeObject("Not found","User not exists",""));
             }
             // save old image before delete
-            ImageUserEntity oldImage = user.getImageUser();
 
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
             String url = "";
@@ -66,30 +65,24 @@ public class UserService implements IUserService {
                             .body(new ResponeObject("Fail","Filename contains invalid path sequence",""));
                 }
 
-                ImageUserEntity newImage = new ImageUserEntity();
-                newImage.setImage_data(image.getBytes());
-                newImage.setCreate_at(new Timestamp(System.currentTimeMillis()));
-                newImage.setType(image.getContentType());
 //                imageUserEntity.setUser(user);
 
-
-
-                newImage = imageUserRepository.save(newImage);
-                user.setImageUser(newImage);
+                String url_avatar = uploadFileService.uploadFile(image);
+                user.setUrl_avatar(url_avatar);
                 userRepository.save(user);
 
-                url = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/api/user/image/get_avatar/")
-                        .path(newImage.getId().toString())
-                        .toUriString();
-                newImage.setUrl(url);
-                imageUserRepository.save(newImage);
-
-                // delete old image form db
-                if(oldImage != null)
-                {
-                    imageUserRepository.delete(oldImage);
-                }
+//                url = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/api/user/image/get_avatar/")
+//                        .path(newImage.getId().toString())
+//                        .toUriString();
+//                newImage.setUrl(url);
+//                imageUserRepository.save(newImage);
+//
+//                // delete old image form db
+//                if(oldImage != null)
+//                {
+//                    imageUserRepository.delete(oldImage);
+//                }
 
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponeObject("Fail",e.getMessage(),""));
@@ -103,26 +96,26 @@ public class UserService implements IUserService {
         }
     }
 
-    @Override
-    public ResponseEntity<Resource> getAvatar(Long idImage) {
-        try
-        {
-            ImageUserEntity image = imageUserRepository.findById(idImage).orElse(null);
-            return  ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(image.getType()))
-
-                    .body(new ByteArrayResource(image.getImage_data()));
-
-            // If you want to dowload resource, uncomment it
-            // .header(HttpHeaders.CONTENT_DISPOSITION,
-            // "attachment; filename=\"" + cv.getName()
-            //   + "\"")
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
+//    @Override
+//    public ResponseEntity<Resource> getAvatar(Long idImage) {
+//        try
+//        {
+//            ImageUserEntity image = imageUserRepository.findById(idImage).orElse(null);
+//            return  ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(image.getType()))
+//
+//                    .body(new ByteArrayResource(image.getImage_data()));
+//
+//            // If you want to dowload resource, uncomment it
+//            // .header(HttpHeaders.CONTENT_DISPOSITION,
+//            // "attachment; filename=\"" + cv.getName()
+//            //   + "\"")
+//        }
+//        catch (Exception ex)
+//        {
+//            throw ex;
+//        }
+//    }
 
     @Override
     public ResponseEntity<ResponeObject> editAboutMeByUser(Long idUser, String aboutme) {
@@ -411,6 +404,21 @@ public class UserService implements IUserService {
                     .body(new ResponeObject("Success","Update education successful",""));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponeObject("Unauthorized","Only users are allowed to update education",""));
+
+    }
+
+    @Override
+    public ResponseEntity<ResponeObject> uploadImage(MultipartFile image) {
+        if(image.isEmpty())
+        {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new ResponeObject("Not content","Not content",""));
+
+        }
+        String urlFile = uploadFileService.uploadFile(image);
+        System.out.println(urlFile);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponeObject("Successful","Upload successful",urlFile));
 
     }
 

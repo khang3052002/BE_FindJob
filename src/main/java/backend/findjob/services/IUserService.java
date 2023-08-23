@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IUserService {
     public ResponseEntity<ResponeObject> uploadAvatar(@RequestParam("image") MultipartFile image);
 
-    ResponseEntity<Resource> getAvatar(Long idImage);
+//    ResponseEntity<Resource> getAvatar(Long idImage);
 
     ResponseEntity<ResponeObject> editAboutMeByUser(Long idUser, String aboutme);
 
@@ -30,4 +30,6 @@ public interface IUserService {
     ResponseEntity<ResponeObject> deleteEducationById(Long idUser, Long idEducation);
 
     ResponseEntity<ResponeObject> updateEducationById(Long idUser, Long idEducation, EducationDTO educationDTO);
+
+    ResponseEntity<ResponeObject> uploadImage(MultipartFile image);
 }
