@@ -1,5 +1,6 @@
 package backend.findjob.services;
 
+import backend.findjob.dto.AppreciateDTO;
 import backend.findjob.dto.EducationDTO;
 import backend.findjob.dto.WorkExpDTO;
 import backend.findjob.dto.respone.ResponeObject;
@@ -32,4 +33,12 @@ public interface IUserService {
     ResponseEntity<ResponeObject> updateEducationById(Long idUser, Long idEducation, EducationDTO educationDTO);
 
     ResponseEntity<ResponeObject> uploadImage(MultipartFile image);
+
+    ResponseEntity<ResponeObject> addAppreciateByUser(Long idUser, AppreciateDTO appreciateDTO);
+
+    ResponseEntity<ResponeObject> detailAppreciateById(Long idUser, Long idAppreciate);
+
+    ResponseEntity<ResponeObject> deleteAppreciateById(Long idUser, Long idAppreciate);
+
+    ResponseEntity<ResponeObject> updateAppreciateById(Long idUser, Long idAppreciate, AppreciateDTO appreciateDTO);
 }

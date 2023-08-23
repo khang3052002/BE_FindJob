@@ -65,9 +65,6 @@ public class UserAPI {
     @PutMapping("/{id_user}/profile/edit-about-me")
     public ResponseEntity<ResponeObject> editAboutMeByUser(@PathVariable Long id_user, @RequestParam("aboutme") String aboutme)
     {
-
-//        System.out.println(aboutme);
-//        System.out.println(aboutme.contains("{"));
         return userService.editAboutMeByUser(id_user, aboutme);
     }
     @PostMapping("/upload-image")

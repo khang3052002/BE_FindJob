@@ -1,11 +1,13 @@
 package backend.findjob.services.impls;
 
+import backend.findjob.dto.AppreciateDTO;
 import backend.findjob.dto.AuthenticateDTO;
 import backend.findjob.dto.EducationDTO;
 import backend.findjob.dto.WorkExpDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.entity.*;
 import backend.findjob.helper.GenericConverter;
+import backend.findjob.repository.AppreciateRepository;
 import backend.findjob.repository.EducationRepository;
 import backend.findjob.repository.UserRepository;
 import backend.findjob.repository.WorkExpRepository;
@@ -37,6 +39,9 @@ public class UserService implements IUserService {
     private EducationRepository educationRepository;
     @Autowired
     private UploadFileService uploadFileService;
+
+    @Autowired
+    private AppreciateRepository appreciateRepository;
     @Override
     public ResponseEntity<ResponeObject> uploadAvatar(MultipartFile image) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -419,6 +424,130 @@ public class UserService implements IUserService {
         System.out.println(urlFile);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponeObject("Successful","Upload successful",urlFile));
+
+    }
+
+    @Override
+    public ResponseEntity<ResponeObject> addAppreciateByUser(Long idUser, AppreciateDTO appreciateDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AuthenticateDTO authenticateDTO  = null;
+        // Ai co xac thuc thi moi dc up load
+        if(authentication.getPrincipal().getClass() == AuthenticateDTO.class) {
+            authenticateDTO = (AuthenticateDTO) authentication.getPrincipal();
+
+            UserEntity user = userRepository.findById(idUser).orElse(null);
+
+            if (user == null) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found", "User not exists", ""));
+            }
+
+            AppreciateEntity appreciateEntity = new AppreciateEntity();
+            appreciateEntity.setTitle(appreciateDTO.getTitle());
+            appreciateEntity.setPosition(appreciateDTO.getPosition());
+            appreciateEntity.setYear(appreciateDTO.getYear());
+            appreciateEntity.setUser(user);
+            appreciateRepository.save(appreciateEntity);
+
+
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponeObject("Success","Add appreciate successful",""));
+
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponeObject("Unauthorized","Only users are allowed to add appreciate.",""));
+
+    }
+
+    @Override
+    public ResponseEntity<ResponeObject> detailAppreciateById(Long idUser, Long idAppreciate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AuthenticateDTO authenticateDTO  = null;
+        // Ai co xac thuc thi moi dc up load
+        if(authentication.getPrincipal().getClass() == AuthenticateDTO.class) {
+            AppreciateEntity appreciateEntity = appreciateRepository.findById(idAppreciate).orElse(null);
+            if(appreciateEntity == null)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found","Not found",""));
+            }
+            if(appreciateEntity.getUser().getId() != idUser)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found","Not found work experience by user",""));
+            }
+            try
+            {
+                AppreciateDTO appreciateDTO = GenericConverter.convert(appreciateEntity,AppreciateDTO.class);
+
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponeObject("Success","Get detail appreciate successful",appreciateDTO));
+
+            }catch (Exception ex)
+            {
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponeObject("Exception",ex.getMessage(),""));
+
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponeObject("Unauthorized","Only users are allowed to get detail appreciateDTO",""));
+
+    }
+
+    @Override
+    public ResponseEntity<ResponeObject> deleteAppreciateById(Long idUser, Long idAppreciate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AuthenticateDTO authenticateDTO  = null;
+        // Ai co xac thuc thi moi dc up load
+        if(authentication.getPrincipal().getClass() == AuthenticateDTO.class) {
+            AppreciateEntity appreciateEntity = appreciateRepository.findById(idAppreciate).orElse(null);
+            if(appreciateEntity == null)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found","Not found",""));
+            }
+            if(appreciateEntity.getUser().getId() != idUser)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found","Not found appreciate by user",""));
+            }
+
+            appreciateRepository.delete(appreciateEntity);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponeObject("Success","Delete appreciate successful",""));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponeObject("Unauthorized","Only users are allowed to delete appreciate",""));
+
+    }
+
+    @Override
+    public ResponseEntity<ResponeObject> updateAppreciateById(Long idUser, Long idAppreciate, AppreciateDTO appreciateDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AuthenticateDTO authenticateDTO  = null;
+        // Ai co xac thuc thi moi dc up load
+        if(authentication.getPrincipal().getClass() == AuthenticateDTO.class) {
+            AppreciateEntity appreciateEntity = appreciateRepository.findById(idAppreciate).orElse(null);
+            if(appreciateEntity == null)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found","Not found",""));
+            }
+            if(appreciateEntity.getUser().getId() != idUser)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponeObject("Not found","Not found appreciate by user",""));
+            }
+            appreciateEntity.setTitle(appreciateDTO.getTitle());
+            appreciateEntity.setPosition(appreciateDTO.getPosition());
+            appreciateEntity.setYear(appreciateDTO.getYear());
+            appreciateRepository.save(appreciateEntity);
+
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponeObject("Success","Update appreciate successful",""));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponeObject("Unauthorized","Only users are allowed to update appreciate",""));
 
     }
 
