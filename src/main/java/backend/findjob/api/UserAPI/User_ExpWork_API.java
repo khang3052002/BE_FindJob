@@ -4,6 +4,7 @@ import backend.findjob.dto.WorkExpDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class User_ExpWork_API {
     private IUserService userService;
 
     @PostMapping("/{id_user}/profile/add-work-exp")
-    public ResponseEntity<ResponeObject> addWorkExpByUser(@PathVariable Long id_user, @org.springframework.web.bind.annotation.RequestBody WorkExpDTO workExp)
+    public ResponseEntity<ResponeObject> addWorkExpByUser(@PathVariable Long id_user, @org.springframework.web.bind.annotation.RequestBody @Valid WorkExpDTO workExp)
     {
 
 //        System.out.println(aboutme);
@@ -42,7 +43,7 @@ public class User_ExpWork_API {
     }
     @PutMapping("/{id_user}/profile/update-work-exp/{id_work_exp}")
     public ResponseEntity<ResponeObject>updateWorkExpById(@PathVariable Long id_user,
-                                                          @org.springframework.web.bind.annotation.RequestBody WorkExpDTO workExp,
+                                                          @org.springframework.web.bind.annotation.RequestBody @Valid WorkExpDTO workExp,
                                                           @PathVariable Long id_work_exp
     )
     {

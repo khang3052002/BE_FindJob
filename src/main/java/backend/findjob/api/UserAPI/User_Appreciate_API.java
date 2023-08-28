@@ -4,6 +4,7 @@ import backend.findjob.dto.AppreciateDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class User_Appreciate_API {
     @Autowired
     private IUserService userService;
     @PostMapping("/{id_user}/profile/add-appreciate")
-    public ResponseEntity<ResponeObject> addAppreciateByUser(@PathVariable Long id_user, @RequestBody AppreciateDTO appreciateDTO)
+    public ResponseEntity<ResponeObject> addAppreciateByUser(@PathVariable Long id_user, @RequestBody @Valid AppreciateDTO appreciateDTO)
     {
 
         return userService.addAppreciateByUser(id_user, appreciateDTO);
@@ -33,7 +34,7 @@ public class User_Appreciate_API {
     }
     @PutMapping("/{id_user}/profile/update-appreciate/{id_appreciate}")
     public ResponseEntity<ResponeObject>updateAppreciateById(@PathVariable Long id_user,
-                                                            @RequestBody AppreciateDTO appreciateDTO,
+                                                            @RequestBody @Valid AppreciateDTO appreciateDTO,
                                                             @PathVariable Long id_appreciate
     )
     {

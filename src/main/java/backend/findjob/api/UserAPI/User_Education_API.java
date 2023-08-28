@@ -5,6 +5,7 @@ import backend.findjob.dto.WorkExpDTO;
 import backend.findjob.dto.respone.ResponeObject;
 import backend.findjob.services.IUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class User_Education_API {
     private IUserService userService;
 
     @PostMapping("/{id_user}/profile/add-education")
-    public ResponseEntity<ResponeObject> addEducationByUser(@PathVariable Long id_user, @RequestBody EducationDTO educationDTO)
+    public ResponseEntity<ResponeObject> addEducationByUser(@PathVariable Long id_user, @RequestBody @Valid EducationDTO educationDTO)
     {
 
         return userService.addEducationByUser(id_user, educationDTO);
@@ -35,7 +36,7 @@ public class User_Education_API {
     }
     @PutMapping("/{id_user}/profile/update-education/{id_education}")
     public ResponseEntity<ResponeObject>updateEducationById(@PathVariable Long id_user,
-                                                          @RequestBody EducationDTO educationDTO,
+                                                          @RequestBody @Valid EducationDTO educationDTO,
                                                           @PathVariable Long id_education
     )
     {

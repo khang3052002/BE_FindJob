@@ -1,13 +1,25 @@
 package backend.findjob.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.sql.Date;
 
 //@Builder
 public class EducationDTO {
+    @NotBlank(message = "Title shouldn't blank")
+    @NotNull(message = "Title shouldn't be null")
     private String title;
+
     private String description;
+    @NotBlank(message = "school shouldn't blank")
+    @NotNull(message = "school shouldn't be null")
     private String school;
+    @NotBlank(message = "start_date shouldn't blank")
+    @NotNull(message = "start_date shouldn't be null")
     private Date start_date;
+    @NotBlank(message = "end_date shouldn't blank")
+    @NotNull(message = "end_date shouldn't be null")
     private Date end_date;
 
 
