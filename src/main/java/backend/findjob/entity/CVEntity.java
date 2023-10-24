@@ -13,12 +13,12 @@ public class CVEntity extends BaseEntity{
     private String url;
     @Column
     private String name;
-//    @Column
-//    private String type;
+    @Column
+    private String type;
 
-//    @Column(name = "cv_data", columnDefinition = "MEDIUMBLOB")
-//    @Lob
-//    private byte[] cv_data;
+    @Column(name = "cv_data", columnDefinition = "MEDIUMBLOB")
+    @Lob
+    private byte[] cv_data;
     @Column(columnDefinition="TEXT")
     private String info;
     @Column
@@ -74,21 +74,21 @@ public class CVEntity extends BaseEntity{
         this.name = name;
     }
 
-//    public String getType() {
-//        return type;
-//    }
-//
-//    public void setType(String type) {
-//        this.type = type;
-//    }
-//
-//    public byte[] getCv_data() {
-//        return cv_data;
-//    }
-//
-//    public void setCv_data(byte[] cv_data) {
-//        this.cv_data = cv_data;
-//    }
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public byte[] getCv_data() {
+        return cv_data;
+    }
+
+    public void setCv_data(byte[] cv_data) {
+        this.cv_data = cv_data;
+    }
 
     public Timestamp getCreate_at() {
         return create_at;
