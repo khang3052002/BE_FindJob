@@ -57,23 +57,23 @@ public class CV_API {
 
         return cvService.uploadCV(file,info,id_job);
     }
-    @Operation(
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            content = @Content(mediaType = "application/pdf")
-                    ),
-                    @ApiResponse(
-                            description = "Not found",
-                            responseCode = "404"
-                    )
-            }
-    )
-    @GetMapping("/download/{id_resume}")
-    public ResponseEntity<?> downloadCV(@PathVariable("id_resume") Long id_resume)
-    {
-        return cvService.downloadCV(id_resume);
-    }
+//    @Operation(
+//            responses = {
+//                    @ApiResponse(
+//                            responseCode = "200",
+//                            content = @Content(mediaType = "application/pdf")
+//                    ),
+//                    @ApiResponse(
+//                            description = "Not found",
+//                            responseCode = "404"
+//                    )
+//            }
+//    )
+//    @GetMapping("/download/{id_resume}")
+//    public ResponseEntity<?> downloadCV(@PathVariable("id_resume") Long id_resume)
+//    {
+//        return cvService.downloadCV(id_resume);
+//    }
 
 
 

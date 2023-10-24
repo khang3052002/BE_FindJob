@@ -1,13 +1,26 @@
 package backend.findjob.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.sql.Date;
 //@Builder
 public class WorkExpDTO {
+    @NotBlank(message = "end_date shouldn't blank")
+    @NotNull(message = "end_date shouldn't be null")
     private String title;
     private String description;
+    @NotBlank(message = "is_position_now shouldn't blank")
+    @NotNull(message = "is_position_now shouldn't be null")
     private Boolean is_position_now;
+    @NotBlank(message = "company shouldn't blank")
+    @NotNull(message = "company shouldn't be null")
     private String company;
+    @NotBlank(message = "start_date shouldn't blank")
+    @NotNull(message = "start_date shouldn't be null")
     private Date start_date;
+    @NotBlank(message = "end_date shouldn't blank")
+    @NotNull(message = "end_date shouldn't be null")
     private Date end_date;
 
 

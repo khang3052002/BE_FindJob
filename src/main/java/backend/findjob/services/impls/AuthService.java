@@ -104,7 +104,7 @@ public class AuthService implements IAuthService {
            {
                InfoUserResponeDTO infoUserResponeDTO = new InfoUserResponeDTO(
                        userEntity.getId(),userEntity.getUsername(),userEntity.getEmail(),
-                       userEntity.getName(),userEntity.getImageUser().getUrl(),accessToken,refreshToken
+                       userEntity.getName(),userEntity.getUrl_avatar(),accessToken,refreshToken
                );
                String key  = "user"+userEntity.getId().toString() + userEntity.getUsername();
                redisTemplate.opsForValue().set(key,refreshToken);

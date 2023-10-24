@@ -9,6 +9,8 @@ import backend.findjob.repository.CVRepository;
 import backend.findjob.repository.JobRepository;
 import backend.findjob.repository.UserRepository;
 import backend.findjob.services.ICVService;
+import backend.findjob.services.IUploadFileService;
+import com.cloudinary.Cloudinary;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -34,6 +36,9 @@ public class CVService implements ICVService {
     private JobRepository jobRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private IUploadFileService uploadFileService;
 
     @Override
     public ResponseEntity<ResponeObject> uploadCV(MultipartFile file, String info, Long id_job) {
@@ -68,10 +73,14 @@ public class CVService implements ICVService {
                             .body(new ResponeObject("Fail","Filename contains invalid path sequence",""));
                 }
 
+                // Upload cv to cloudinary
+                String url = uploadFileService.uploadFile(file);
+                System.out.println(url);
                 CVEntity cv = new CVEntity();
                 cv.setName(fileName);
-                cv.setType(file.getContentType());
-                cv.setCv_data(file.getBytes());
+                cv.setUrl(url);
+//                cv.setType(file.getContentType());
+//                cv.setCv_data(file.getBytes());
                 cv.setCreate_at(new Timestamp(System.currentTimeMillis()));
                 cv.setInfo(info);
                 cv.setUser(user);
@@ -79,12 +88,12 @@ public class CVService implements ICVService {
 
                 cv =  cvRepository.save(cv);
 
-                String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/api/resumes/download/")
-                        .path(cv.getId().toString())
-                        .toUriString();
-
-                System.out.println(downloadURl);
+//                String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/api/resumes/download/")
+//                        .path(cv.getId().toString())
+//                        .toUriString();
+//
+//                System.out.println(downloadURl);
 
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
@@ -100,30 +109,30 @@ public class CVService implements ICVService {
         }
     }
 
-    @Override
-    public ResponseEntity<Resource> downloadCV(Long idResume) {
-        try
-        {
-            CVEntity cv = cvRepository.findById(idResume).orElse(null);
-            if(cv == null)
-            {
-                return  ResponseEntity.notFound()
-                        .build();
-            }
-            return  ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(cv.getType()))
-
-                    .body(new ByteArrayResource(cv.getCv_data()));
-
-                // If you want to dowload resource, uncomment it
-                // .header(HttpHeaders.CONTENT_DISPOSITION,
-                // "attachment; filename=\"" + cv.getName()
-                //   + "\"")
-                }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-
-    }
+//    @Override
+//    public ResponseEntity<Resource> downloadCV(Long idResume) {
+//        try
+//        {
+//            CVEntity cv = cvRepository.findById(idResume).orElse(null);
+//            if(cv == null)
+//            {
+//                return  ResponseEntity.notFound()
+//                        .build();
+//            }
+//            return  ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(cv.getType()))
+//
+//                    .body(new ByteArrayResource(cv.getCv_data()));
+//
+//                // If you want to dowload resource, uncomment it
+//                // .header(HttpHeaders.CONTENT_DISPOSITION,
+//                // "attachment; filename=\"" + cv.getName()
+//                //   + "\"")
+//                }
+//        catch (Exception ex)
+//        {
+//            throw ex;
+//        }
+//
+//    }
 }

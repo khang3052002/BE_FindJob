@@ -21,7 +21,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
 //    private String image;
     @Column
     private Date dob;
-
+    @Column
+    private String url_avatar;
     @Column(columnDefinition = "ENUM('Male', 'Female')")
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -41,9 +42,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String skill;
     @Column
     private String about_me;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_image", referencedColumnName = "id")
-    private ImageUserEntity imageUser;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "id_image", referencedColumnName = "id")
+//    private ImageUserEntity imageUser;
     @ManyToMany
     @JoinTable(name="user_job_save",
             joinColumns = @JoinColumn(name = "id_user"),
@@ -65,6 +66,15 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private List<AppreciateEntity> listAppreciate = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<LanguageExpEntity> listLangExp = new ArrayList<>();
+
+    public String getUrl_avatar() {
+        return url_avatar;
+    }
+
+    public void setUrl_avatar(String url_avatar) {
+        this.url_avatar = url_avatar;
+    }
+
     public String getName() {
         return name;
     }
@@ -89,13 +99,13 @@ public class UserEntity extends BaseEntity implements UserDetails {
         this.about_me = about_me;
     }
 
-    public ImageUserEntity getImageUser() {
-        return imageUser;
-    }
-
-    public void setImageUser(ImageUserEntity imageUser) {
-        this.imageUser = imageUser;
-    }
+//    public ImageUserEntity getImageUser() {
+//        return imageUser;
+//    }
+//
+//    public void setImageUser(ImageUserEntity imageUser) {
+//        this.imageUser = imageUser;
+//    }
 
     public void setListJobSave(List<JobEntity> listJobSave) {
         this.listJobSave = listJobSave;

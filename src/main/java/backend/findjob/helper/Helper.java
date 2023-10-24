@@ -66,5 +66,19 @@ public class Helper {
         return date;
     }
 
+    public static String removeExtension(String filename) {
+        // Find the last dot in the filename
+        int lastDotIndex = filename.lastIndexOf(".");
+
+        // If there's a dot and it's not the first character
+        if (lastDotIndex != -1 && lastDotIndex > 0) {
+            // Extract the substring before the last dot
+            return filename.substring(0, lastDotIndex);
+        }
+
+        // No extension found, return the original filename
+        return filename;
+    }
+
 
 }

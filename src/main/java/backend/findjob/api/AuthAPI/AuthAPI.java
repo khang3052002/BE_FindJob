@@ -8,6 +8,7 @@ import backend.findjob.services.IAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class AuthAPI {
     @Autowired
     private IAuthService authService;
     @PostMapping("/signup")
-    public ResponseEntity<ResponeObject> signUp(@RequestBody SignUpRequest signUpRequestDTO)
+    public ResponseEntity<ResponeObject> signUp(@RequestBody @Valid SignUpRequest signUpRequestDTO)
     {
         return authService.register(signUpRequestDTO);
     }
@@ -40,7 +41,7 @@ public class AuthAPI {
         return authService.login(signInRequestDTO);
     }
     @PostMapping("/refreshToken")
-    public  ResponseEntity<ResponeObject> refreshToken (@RequestBody RefreshTokenRequest refreshTokenRequestDTO)
+    public  ResponseEntity<ResponeObject> refreshToken (@RequestBody @Valid RefreshTokenRequest refreshTokenRequestDTO)
     {
         return authService.refreshToken(refreshTokenRequestDTO);
     }
