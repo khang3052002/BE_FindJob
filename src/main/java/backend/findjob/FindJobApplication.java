@@ -9,7 +9,6 @@ public class FindJobApplication {
 
 	public static void main(String[] args) {
 
-//		System.out.println(Helper.convertDay());
 		SpringApplication.run(FindJobApplication.class, args);
 	}
 

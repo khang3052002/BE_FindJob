@@ -107,7 +107,7 @@ public class AuthService implements IAuthService {
                        userEntity.getName(),userEntity.getUrl_avatar(),accessToken,refreshToken
                );
                String key  = "user"+userEntity.getId().toString() + userEntity.getUsername();
-               redisTemplate.opsForValue().set(key,refreshToken);
+//               redisTemplate.opsForValue().set(key,refreshToken);
                return ResponseEntity.status(HttpStatus.OK).body(new ResponeObject("OK","Authenticated Success",infoUserResponeDTO));
            }
        }

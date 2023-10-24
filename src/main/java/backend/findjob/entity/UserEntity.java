@@ -17,8 +17,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column
     private String name;
 
-//    @Column
-//    private String image;
+    @Column
+    private String image;
     @Column
     private Date dob;
     @Column
@@ -83,13 +83,13 @@ public class UserEntity extends BaseEntity implements UserDetails {
         this.name = name;
     }
 
-//    public String getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(String image) {
-//        this.image = image;
-//    }
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getAbout_me() {
         return about_me;

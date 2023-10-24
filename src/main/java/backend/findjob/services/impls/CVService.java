@@ -74,13 +74,13 @@ public class CVService implements ICVService {
                 }
 
                 // Upload cv to cloudinary
-                String url = uploadFileService.uploadFile(file);
-                System.out.println(url);
+//                String url = uploadFileService.uploadFile(file);
+//                System.out.println(url);
                 CVEntity cv = new CVEntity();
                 cv.setName(fileName);
-                cv.setUrl(url);
-//                cv.setType(file.getContentType());
-//                cv.setCv_data(file.getBytes());
+//                cv.setUrl(url);
+                cv.setType(file.getContentType());
+                cv.setCv_data(file.getBytes());
                 cv.setCreate_at(new Timestamp(System.currentTimeMillis()));
                 cv.setInfo(info);
                 cv.setUser(user);
@@ -88,12 +88,14 @@ public class CVService implements ICVService {
 
                 cv =  cvRepository.save(cv);
 
-//                String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                        .path("/api/resumes/download/")
-//                        .path(cv.getId().toString())
-//                        .toUriString();
-//
-//                System.out.println(downloadURl);
+                String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/resumes/download/")
+                        .path(cv.getId().toString())
+                        .toUriString();
+                cv.setUrl(downloadURl);
+                cvRepository.save(cv);
+
+                System.out.println(downloadURl);
 
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
